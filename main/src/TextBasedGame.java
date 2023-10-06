@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Random;
 
 public class TextBasedGame {
     private static boolean lockSafe = true;
@@ -47,8 +48,18 @@ public class TextBasedGame {
     public static void door() {
         if (hasKey) {     // if the user got the key from the box, then they can open the door
             System.out.println("you use the key to unlock the door.");
-            gameWon = true;
-            System.out.println("you've escaped. good job!");
+            System.out.println("however, there is a number pad lock preventing your escape. enter a number: ");
+            int doorNum = scanner.nextInt();
+            if (doorNum % 2 == 0 ) {
+                System.out.println("the door opens with a click.");
+                gameWon = true;
+                System.out.println("you've escaped. good job!");
+            }
+            else {
+                System.out.println("oh no! you've pressed the wrong number. the alarm sounds, locking all possible exits from the room. ");
+                gameLost = true;
+                System.out.println("you lost. good effort.");
+            }
         } else {     // if not, they cannot open the door
             System.out.println("the door is locked. you need to find a key.");
         }
@@ -75,13 +86,43 @@ public class TextBasedGame {
             System.out.println("you lost. good effort.");
             gameLost = true;
         } else if (input.equals("tree")) {     // losing scenario 2
-            System.out.println("you jump and grab onto the tree branch. as you try to adjust, the branch snaps and you fall.");
-            System.out.println("you lost. good effort.");
-            gameLost = true;
+            double weightTree;
+            System.out.println("you jump and grab onto the tree branch.");
+            System.out.println("please enter your weight in kg: ");
+            weightTree = scanner.nextDouble();
+            if (weightTree >= 80) {
+                System.out.println("as you adjust your grip, you slip and fall. \nyou lost. good effort.");
+                gameLost = true;
+            }
+            else if (weightTree < 80) {
+                System.out.println("you maneuver your way to the tree trunk and slide down. ");
+                gameWon = true;
+                System.out.println("you've escaped. good job!");
+            }
+            else {
+                System.out.println("invalid input.");
+                gameLost = true;
+                System.out.println("you lost. good effort.");
+            }
         } else if (input.equals("pipe")) {     // winning scenario 1
-            System.out.println("you carefully hold onto the pipe and slowly slide down to the ground.");
-            gameWon = true;
-            System.out.println("you've escaped. good job!");
+            double weightPipe;
+            System.out.println("you carefully hold onto the pipe and begin sliding down.");
+            System.out.println("please enter your weight in kg: ");
+            weightPipe = scanner.nextDouble();
+            if (weightPipe >= 80) {
+                System.out.println("you realise the pipe is wobbly and you fall. \nyou lost. good effort.");
+                gameLost = true;
+            }
+            else if (weightPipe < 80) {
+                System.out.println("you slowly slide down the pipe and land safely on the ground. ");
+                gameWon = true;
+                System.out.println("you've escaped. good job!");
+            }
+            else {
+                System.out.println("invalid input.");
+                gameLost = true;
+                System.out.println("you lost. good effort.");
+            }
         }
         else {
             System.out.println("huh?");
@@ -89,23 +130,22 @@ public class TextBasedGame {
     }
 
     public static void cabinet() {
-        System.out.println("there are three drawers.");
+        System.out.println("there are two drawers.");
         input = scanner.nextLine();
         if (input.equals("drawer 1") || input.equals("1")) {
             System.out.println("only dust.");
         }
-        else if (input.equals("drawer 2") || input.equals("2")) {     // answers combined will be the code for the blue lock
-            System.out.println("inside is a piece of paper written a math problem:");
-            System.out.println("1. 6 ÷ 2(1 + 2) = ?\n2. (25 - 4 × 6) + 2 × 3 = ?\n3. 10 + 1(8 - 5) * 2 = ?");
-        }
-        else if (input.equals("drawer 3") || input.equals("3")) {     // hint for clock code
+        else if (input.equals("drawer 2") || input.equals("2")) {      // hint for clock code
             System.out.println("the drawer is empty. but carved into the wood is: '12 → 24'");
+        }
+        else {
+            System.out.println("huh?");
         }
     }
 
     public static void safe() {
         if (lockSafe) {
-            System.out.println("the safe is locked. it requires a four-digit code. code: ");
+            System.out.println("the safe is locked. it requires a four-digit code.");
             input = scanner.nextLine();
             if (input.equals("1943")) {     // time of clock 7:43 —> 24hr time 19:43
                 lockSafe = false;
@@ -142,7 +182,9 @@ public class TextBasedGame {
             if (input.equals("run")) {     // caesar cipher solution
                 System.out.println("the red lock clicks open.");
                 redLock = true;
-                System.out.println("the red compartment opens. inside is a silver key'.");
+                System.out.println("the red compartment opens. inside is a silver key.");
+                System.out.println("you take the key.");
+                hasKey = true;
             }
             else {
                 System.out.println("the code is incorrect.");
@@ -154,18 +196,49 @@ public class TextBasedGame {
     }
 
     public static void blueCompartment() {
-        System.out.println("this compartment requires a four-digit code. enter code: ");
-        input = scanner.nextLine();
         if (!blueLock) {
-            if (input.equals("9716")) {     // math problem solution
+            Random rand = new Random();
+            int score = 0;
+            int a = rand.nextInt(10);
+            int b = rand.nextInt(50);
+            int c = rand.nextInt(25);
+            int d = rand.nextInt(15);
+            int e = rand.nextInt(50);
+            int f = rand.nextInt(50);
+            System.out.println("this compartment requires answers to three math problems.");
+            System.out.println("1. what is the remainder of " + b + " / " + a + "?");
+            int blueAns = scanner.nextInt();
+            if (blueAns == b % a) {
+                System.out.println("correct!");
+                score += 1;
+            } else {
+                System.out.println("incorrect. the answer was " + b % a + ".");
+            }
+
+            System.out.println("2. what is " + f + " - " + e + "?");
+            blueAns = scanner.nextInt();
+            if (blueAns == f - e) {
+                System.out.println("correct!");
+                score += 1;
+            } else {
+                System.out.println("incorrect. the answer was " + (f - e) + ".");
+            }
+
+            System.out.println("3. what is " + c + " * " + d + "?");
+            blueAns = scanner.nextInt();
+            if (blueAns == c * d) {
+                System.out.println("correct!");
+                score += 1;
+            } else {
+                System.out.println("incorrect. the answer was " + c * d + ".");
+            }
+            if (score == 3) {
                 System.out.println("the blue lock clicks open.");
                 blueLock = true;
                 System.out.println("the blue compartment opens. inside is a note written 'caesar cipher a → j (9)'.");     // hint for caesar cipher
-                System.out.println("you take the key.");
-                hasKey = true;
             }
             else {
-                System.out.println("the code is incorrect.");
+                System.out.println("you didn't get all 3 questions right. try again.");
             }
         }
         else {
